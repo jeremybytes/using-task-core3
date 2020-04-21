@@ -11,12 +11,13 @@ namespace UsingTask.UI
     public partial class MainWindow : Window
     {
         PersonReader reader = new PersonReader();
-        CancellationTokenSource tokenSource;
+        CancellationTokenSource? tokenSource;
 
         public MainWindow()
         {
             InitializeComponent();
         }
+
         private void FetchWithTaskButton_Click(object sender, RoutedEventArgs e)
         {
             tokenSource = new CancellationTokenSource();
@@ -26,22 +27,21 @@ namespace UsingTask.UI
             Task<List<Person>> peopleTask = reader.GetAsync(tokenSource.Token);
             peopleTask.ContinueWith(task =>
             {
-                switch (task.Status)
+                if (task.IsFaulted)
                 {
-                    case TaskStatus.RanToCompletion:
-                        List<Person> people = task.Result;
-                        foreach (var person in people)
-                            PersonListBox.Items.Add(person);
-                        break;
-                    case TaskStatus.Canceled:
-                        MessageBox.Show("CANCELED");
-                        break;
-                    case TaskStatus.Faulted:
-                        foreach (var ex in task.Exception.Flatten().InnerExceptions)
-                            MessageBox.Show($"ERROR\n{ex.Message}");
-                        break;
+                    foreach (var ex in task.Exception!.Flatten().InnerExceptions)
+                        MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
                 }
-
+                if (task.IsCanceled)
+                {
+                    MessageBox.Show($"CANCELED");
+                }
+                if (task.Status == TaskStatus.RanToCompletion)
+                {
+                    List<Person> people = task.Result;
+                    foreach (var person in people)
+                        PersonListBox.Items.Add(person);
+                }
                 FetchWithTaskButton.IsEnabled = true;
             },
             TaskScheduler.FromCurrentSynchronizationContext());
@@ -59,13 +59,13 @@ namespace UsingTask.UI
                 foreach (var person in people)
                     PersonListBox.Items.Add(person);
             }
-            catch (OperationCanceledException ex)
+            catch(OperationCanceledException ex)
             {
-                MessageBox.Show($"CANCELED\n{ex.Message}");
+                MessageBox.Show($"CANCELED\n{ex.GetType()}\n{ex.Message}");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR\n{ex.Message}");
+                MessageBox.Show($"ERROR\n{ex.GetType()}\n{ex.Message}");
             }
             finally
             {
@@ -75,7 +75,7 @@ namespace UsingTask.UI
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            tokenSource.Cancel();
+            tokenSource?.Cancel();
         }
 
         private void ClearListBox()

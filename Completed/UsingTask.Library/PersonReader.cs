@@ -25,7 +25,7 @@ namespace UsingTask.Library
         {
             await Task.Delay(3000, cancelToken);
 
-            //throw new NotImplementedException("GetAsync is not implemented");
+            //throw new NotImplementedException("GetAsync is not implemented.");
 
             cancelToken.ThrowIfCancellationRequested();
 
