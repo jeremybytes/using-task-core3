@@ -42,3 +42,7 @@ Articles and additional resources: [http://www.jeremybytes.com/Demos.aspx#TaskAn
 * [Stephen Cleary](http://blog.stephencleary.com/)
 * [Lucian Wischik](http://blogs.msdn.com/b/lucian/)
 * [Stephen Toub](https://devblogs.microsoft.com/pfxteam/author/toub/)
+
+**Parallel Programming wtih Task**  
+* [Run Faster: Parallel Programming in C#](http://www.jeremybytes.com/Demos.aspx#ParallelProgramming)  
+* Book Review: [Parallel Programming with Microsoft .NET](https://jeremybytes.blogspot.com/2014/02/book-review-parallel-programming-with.html)  
